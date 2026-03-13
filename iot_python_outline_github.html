@@ -1,0 +1,364 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>物聯網課程 Python 學習大綱</title>
+  <style>
+    :root {
+      --text: #eef2ff;
+      --muted: #c7d2fe;
+      --accent: #60a5fa;
+      --shadow: 0 18px 60px rgba(0,0,0,.28);
+      --radius: 22px;
+    }
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0;
+      font-family: "Segoe UI", "Noto Sans TC", "Microsoft JhengHei", sans-serif;
+      color: var(--text);
+      background:
+        radial-gradient(circle at top left, rgba(96,165,250,.25), transparent 28%),
+        radial-gradient(circle at top right, rgba(52,211,153,.18), transparent 22%),
+        linear-gradient(180deg, #0b1020 0%, #111934 45%, #0b1226 100%);
+      min-height: 100vh;
+    }
+    .container { width: min(1180px, calc(100% - 32px)); margin: 0 auto; }
+    nav {
+      position: sticky; top: 0; z-index: 20; backdrop-filter: blur(16px);
+      background: rgba(8, 13, 30, .7); border-bottom: 1px solid rgba(255,255,255,.08);
+    }
+    .nav-inner {
+      display: flex; align-items: center; justify-content: space-between;
+      gap: 16px; padding: 14px 0;
+    }
+    .nav-title { font-weight: 800; letter-spacing: .02em; }
+    .nav-links { display: flex; flex-wrap: wrap; gap: 10px; }
+    .nav-links a {
+      color: #dbeafe; text-decoration: none; padding: 8px 12px;
+      border-radius: 10px; transition: background .18s ease; font-size: .94rem;
+    }
+    .nav-links a:hover, .nav-links a.active { background: rgba(255,255,255,.1); }
+
+    .hero { padding: 72px 0 32px; }
+    .hero-grid { display: grid; grid-template-columns: 1.2fr .8fr; gap: 28px; align-items: center; }
+    .badge {
+      display: inline-flex; gap: 10px; padding: 10px 14px; border-radius: 999px;
+      background: rgba(96,165,250,.14); border: 1px solid rgba(96,165,250,.28);
+      color: #dbeafe; font-size: .95rem; margin-bottom: 18px; backdrop-filter: blur(8px);
+    }
+    h1 {
+      font-size: clamp(2.2rem, 5vw, 4.2rem); line-height: 1.08;
+      margin: 0 0 16px; letter-spacing: -.02em;
+    }
+    .hero p { font-size: 1.08rem; color: var(--muted); line-height: 1.9; margin: 0 0 22px; }
+    .hero-actions { display: flex; flex-wrap: wrap; gap: 14px; margin-top: 26px; }
+    .btn {
+      border: none; cursor: pointer; border-radius: 14px; padding: 13px 18px;
+      font-size: 1rem; font-weight: 700; text-decoration: none; color: white;
+      transition: transform .18s ease; box-shadow: var(--shadow);
+    }
+    .btn:hover { transform: translateY(-2px); }
+    .btn-primary { background: linear-gradient(135deg, var(--accent), #818cf8); }
+    .btn-secondary { background: rgba(255,255,255,.08); border: 1px solid rgba(255,255,255,.14); }
+
+    .hero-card, .panel-card, .module-card {
+      background: rgba(255,255,255,.08); border: 1px solid rgba(255,255,255,.1);
+      border-radius: var(--radius); box-shadow: var(--shadow);
+    }
+    .hero-card { padding: 26px; }
+    .stat-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 14px; margin-top: 18px; }
+    .stat {
+      background: rgba(255,255,255,.06); border: 1px solid rgba(255,255,255,.1);
+      border-radius: 18px; padding: 18px;
+    }
+    .stat .num { font-size: 1.8rem; font-weight: 800; margin-bottom: 6px; }
+    .stat .label { color: var(--muted); font-size: .94rem; line-height: 1.5; }
+
+    section { padding: 34px 0; }
+    .section-head { margin-bottom: 18px; }
+    h2 { margin: 0; font-size: clamp(1.5rem, 2.4vw, 2.2rem); }
+    .section-note { color: var(--muted); line-height: 1.8; max-width: 760px; margin-top: 6px; }
+
+    .modules { display: grid; grid-template-columns: repeat(2, 1fr); gap: 18px; }
+    .module-card { overflow: hidden; transition: transform .18s ease; }
+    .module-card:hover { transform: translateY(-3px); }
+    .module-header {
+      padding: 22px 22px 16px; display: flex; justify-content: space-between;
+      gap: 14px; align-items: start;
+    }
+    .module-index {
+      min-width: 44px; height: 44px; border-radius: 14px; display: grid; place-items: center;
+      font-weight: 800; background: linear-gradient(135deg, rgba(96,165,250,.22), rgba(129,140,248,.16));
+      border: 1px solid rgba(96,165,250,.28); color: #dbeafe;
+    }
+    .module-title { margin: 0; font-size: 1.2rem; }
+    .module-goal { color: var(--muted); line-height: 1.8; margin-top: 8px; }
+    .module-body { padding: 0 22px 22px; }
+    .pill-row { display: flex; flex-wrap: wrap; gap: 10px; margin: 12px 0 16px; }
+    .pill {
+      display: inline-block; background: rgba(52,211,153,.12); border: 1px solid rgba(52,211,153,.24);
+      color: #d1fae5; padding: 7px 11px; border-radius: 999px; font-size: .88rem;
+    }
+    .toggle {
+      width: 100%; margin-top: 10px; border: 1px solid rgba(255,255,255,.12);
+      background: rgba(255,255,255,.06); color: white; padding: 12px 14px;
+      text-align: left; border-radius: 14px; cursor: pointer; font-size: .98rem; font-weight: 700;
+    }
+    .panel {
+      display: none; margin-top: 12px; padding: 16px; border-radius: 16px;
+      background: rgba(255,255,255,.05); border: 1px solid rgba(255,255,255,.08);
+    }
+    .panel.open { display: block; }
+    ul.clean { margin: 0; padding-left: 20px; line-height: 1.9; color: #eef2ff; }
+
+    .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; }
+    .panel-card { padding: 22px; }
+    .skill-path { display: grid; gap: 12px; margin-top: 18px; }
+    .path-step {
+      position: relative; padding: 16px 18px; border-radius: 18px;
+      background: rgba(255,255,255,.06); border: 1px solid rgba(255,255,255,.1); font-weight: 700;
+    }
+    .path-step::after {
+      content: "↓"; position: absolute; left: 50%; transform: translateX(-50%);
+      bottom: -20px; color: rgba(255,255,255,.5); font-size: 1.1rem;
+    }
+    .path-step:last-child::after { display: none; }
+
+    .tool-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin-top: 16px; }
+    .tool-card {
+      background: rgba(255,255,255,.06); border: 1px solid rgba(255,255,255,.1);
+      border-radius: 18px; padding: 18px;
+    }
+    .tool-card h3 { margin: 0 0 8px; font-size: 1.05rem; }
+    .tool-card p { margin: 0; color: var(--muted); line-height: 1.8; }
+
+    .footer { padding: 24px 0 52px; color: var(--muted); text-align: center; }
+    .top-btn {
+      position: fixed; right: 20px; bottom: 20px; width: 52px; height: 52px; border: none;
+      border-radius: 50%; background: linear-gradient(135deg, var(--accent), #818cf8);
+      color: white; cursor: pointer; box-shadow: var(--shadow); display: none; font-size: 1.2rem; font-weight: 900;
+    }
+    .top-btn.show { display: block; }
+
+    @media (max-width: 980px) {
+      .hero-grid, .modules, .two-col, .tool-grid { grid-template-columns: 1fr; }
+    }
+    @media (max-width: 720px) {
+      .hero { padding-top: 40px; }
+      .container { width: min(100% - 20px, 1180px); }
+      .nav-inner { align-items: flex-start; flex-direction: column; }
+      .module-header { flex-direction: column; }
+    }
+  </style>
+</head>
+<body>
+  <nav>
+    <div class="container nav-inner">
+      <div class="nav-title">IoT × Python 學習大綱</div>
+      <div class="nav-links">
+        <a href="#overview">課程定位</a>
+        <a href="#modules">學習模組</a>
+        <a href="#path">能力路徑</a>
+        <a href="#tools">建議套件</a>
+        <a href="#goals">學習目標</a>
+      </div>
+    </div>
+  </nav>
+
+  <header class="hero" id="overview">
+    <div class="container hero-grid">
+      <div>
+        <div class="badge">Raspberry Pi 為主的物聯網應用概論課程</div>
+        <h1>適合本課程的<br>Python 學習大綱</h1>
+        <p>這份大綱以物聯網應用為核心，不以完整 Python 語言教學為目標，而是聚焦在 Raspberry Pi 實作真正需要的能力：資料處理、GPIO 控制、檔案紀錄、網路通訊與簡易 IoT 系統開發。</p>
+        <div class="hero-actions">
+          <a class="btn btn-primary" href="#modules">開始瀏覽模組</a>
+          <button class="btn btn-secondary" id="expandAllBtn">展開全部內容</button>
+        </div>
+      </div>
+      <div class="hero-card">
+        <h2 style="margin-bottom:10px;">課程設計重點</h2>
+        <p style="margin:0;color:var(--muted);line-height:1.9;">教學內容應讓學生能夠從基本語法一路走到實際連接感測器、記錄資料、傳送資料到 API 或 MQTT broker，最終建立出可運作的 IoT 小型專題。</p>
+        <div class="stat-grid">
+          <div class="stat"><div class="num">6–7</div><div class="label">建議學習模組數量</div></div>
+          <div class="stat"><div class="num">12–15</div><div class="label">建議 Python 教學時數</div></div>
+          <div class="stat"><div class="num">GPIO</div><div class="label">核心硬體控制能力</div></div>
+          <div class="stat"><div class="num">HTTP / MQTT</div><div class="label">核心 IoT 通訊能力</div></div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main class="container">
+    <section id="modules">
+      <div class="section-head">
+        <h2>課程模組設計</h2>
+        <div class="section-note">每個模組都對應到未來 Raspberry Pi 實作需要的能力，可依學期安排分散到不同週次進行。</div>
+      </div>
+
+      <div class="modules">
+        <article class="module-card">
+          <div class="module-header"><div><h3 class="module-title">模組一：Python 基礎（IoT 需要的最小語法）</h3><div class="module-goal">讓學生具備撰寫 Raspberry Pi 控制程式所需的基本能力。</div></div><div class="module-index">01</div></div>
+          <div class="module-body">
+            <div class="pill-row"><span class="pill">變數</span><span class="pill">資料型態</span><span class="pill">條件判斷</span><span class="pill">迴圈</span></div>
+            <button class="toggle">查看詳細內容</button>
+            <div class="panel"><ul class="clean"><li>Python 程式結構</li><li>變數與資料型態：int、float、string、boolean</li><li>輸入與輸出：input()、print()</li><li>運算子與布林條件</li><li>if / else 決策控制</li><li>while 與 for 迴圈</li><li>IoT 練習：LED 閃爍計數、感測數值判斷</li></ul></div>
+          </div>
+        </article>
+
+        <article class="module-card">
+          <div class="module-header"><div><h3 class="module-title">模組二：Python 函式與模組</h3><div class="module-goal">理解如何組織 IoT 程式，使程式更容易維護與重複使用。</div></div><div class="module-index">02</div></div>
+          <div class="module-body">
+            <div class="pill-row"><span class="pill">函式</span><span class="pill">參數</span><span class="pill">回傳值</span><span class="pill">import</span></div>
+            <button class="toggle">查看詳細內容</button>
+            <div class="panel"><ul class="clean"><li>函式定義與呼叫</li><li>參數與回傳值</li><li>模組化概念</li><li>import 的使用方式</li><li>常見標準模組介紹</li><li>IoT 練習：將 GPIO 控制封裝為函式</li></ul></div>
+          </div>
+        </article>
+
+        <article class="module-card">
+          <div class="module-header"><div><h3 class="module-title">模組三：資料結構（IoT 資料處理）</h3><div class="module-goal">能夠整理感測器資料、裝置設定與多筆量測結果。</div></div><div class="module-index">03</div></div>
+          <div class="module-body">
+            <div class="pill-row"><span class="pill">list</span><span class="pill">dictionary</span><span class="pill">tuple</span><span class="pill">資料整理</span></div>
+            <button class="toggle">查看詳細內容</button>
+            <div class="panel"><ul class="clean"><li>list 的建立與存取</li><li>dictionary 的鍵值概念</li><li>tuple 基本概念</li><li>感測資料的基本處理方式</li><li>IoT 練習：儲存歷史資料、建立裝置設定表</li></ul></div>
+          </div>
+        </article>
+
+        <article class="module-card">
+          <div class="module-header"><div><h3 class="module-title">模組四：檔案與資料記錄</h3><div class="module-goal">讓裝置能持續記錄資料，建立 IoT 專題的資料基礎。</div></div><div class="module-index">04</div></div>
+          <div class="module-body">
+            <div class="pill-row"><span class="pill">文字檔</span><span class="pill">CSV</span><span class="pill">JSON</span><span class="pill">log</span></div>
+            <button class="toggle">查看詳細內容</button>
+            <div class="panel"><ul class="clean"><li>文字檔讀寫</li><li>CSV 檔案格式與使用情境</li><li>JSON 格式與 IoT 資料交換</li><li>簡易資料記錄流程</li><li>IoT 練習：感測資料記錄、建立 log file</li></ul></div>
+          </div>
+        </article>
+
+        <article class="module-card">
+          <div class="module-header"><div><h3 class="module-title">模組五：Raspberry Pi GPIO 控制</h3><div class="module-goal">建立與外部硬體互動的能力，這是本課程實作主軸。</div></div><div class="module-index">05</div></div>
+          <div class="module-body">
+            <div class="pill-row"><span class="pill">GPIO</span><span class="pill">輸入/輸出</span><span class="pill">PWM</span><span class="pill">感測器</span></div>
+            <button class="toggle">查看詳細內容</button>
+            <div class="panel"><ul class="clean"><li>GPIO 基本概念</li><li>數位輸入與輸出</li><li>PWM 概念</li><li>感測器讀取方式</li><li>常用套件：RPi.GPIO、gpiozero</li><li>IoT 練習：LED 控制、按鈕讀取、溫度感測器</li></ul></div>
+          </div>
+        </article>
+
+        <article class="module-card">
+          <div class="module-header"><div><h3 class="module-title">模組六：IoT 網路通訊</h3><div class="module-goal">讓裝置具備連網與資料傳送能力，完成真正的 IoT 流程。</div></div><div class="module-index">06</div></div>
+          <div class="module-body">
+            <div class="pill-row"><span class="pill">HTTP</span><span class="pill">REST API</span><span class="pill">MQTT</span><span class="pill">JSON</span></div>
+            <button class="toggle">查看詳細內容</button>
+            <div class="panel"><ul class="clean"><li>HTTP request 基本概念</li><li>REST API 與資料交換</li><li>MQTT 概念與應用情境</li><li>JSON 傳輸格式</li><li>常用套件：requests、paho-mqtt</li><li>IoT 練習：上傳感測資料、連接 dashboard</li></ul></div>
+          </div>
+        </article>
+
+        <article class="module-card">
+          <div class="module-header"><div><h3 class="module-title">模組七：簡單 IoT Web 系統（選修）</h3><div class="module-goal">在課程時間足夠時，讓學生延伸到簡單的 Web 介面與 API 開發。</div></div><div class="module-index">07</div></div>
+          <div class="module-body">
+            <div class="pill-row"><span class="pill">Flask</span><span class="pill">API</span><span class="pill">Dashboard</span><span class="pill">資料展示</span></div>
+            <button class="toggle">查看詳細內容</button>
+            <div class="panel"><ul class="clean"><li>Flask 基礎概念</li><li>建立簡單 API</li><li>顯示感測資料</li><li>IoT 練習：Raspberry Pi Web Dashboard</li></ul></div>
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <section id="path">
+      <div class="section-head">
+        <h2>建議能力路徑</h2>
+        <div class="section-note">學生不需要先成為完整的 Python 程式設計師，而是先學會完成 IoT 系統開發所需的關鍵能力。</div>
+      </div>
+      <div class="two-col">
+        <div class="panel-card">
+          <h3 style="margin-top:0;">Python × IoT 技能成長流程</h3>
+          <div class="skill-path">
+            <div class="path-step">Python 基礎</div>
+            <div class="path-step">資料處理</div>
+            <div class="path-step">GPIO 控制</div>
+            <div class="path-step">資料記錄</div>
+            <div class="path-step">IoT 網路通訊</div>
+            <div class="path-step">IoT 系統整合</div>
+          </div>
+        </div>
+        <div class="panel-card">
+          <h3 style="margin-top:0;">教學安排建議</h3>
+          <ul class="clean">
+            <li>前半段先建立最小 Python 能力，避免語法過多造成負擔。</li>
+            <li>中段重點放在 Raspberry Pi GPIO 與感測器操作。</li>
+            <li>後半段導入 HTTP / MQTT，讓學生理解裝置如何與外部系統溝通。</li>
+            <li>若時間允許，再加入 Flask 與簡單 dashboard，形成完整專題雛形。</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <section id="tools">
+      <div class="section-head">
+        <h2>建議 Python 套件</h2>
+        <div class="section-note">這些套件足以支撐大部分 Raspberry Pi 物聯網入門實作。</div>
+      </div>
+      <div class="tool-grid">
+        <div class="tool-card"><h3>gpiozero</h3><p>適合初學者的 GPIO 控制套件，語法相對直觀，適合入門教學。</p></div>
+        <div class="tool-card"><h3>RPi.GPIO</h3><p>較低階的 GPIO 控制方式，適合說明底層控制觀念。</p></div>
+        <div class="tool-card"><h3>requests</h3><p>用於 HTTP 與 REST API 溝通，適合上傳或取得 IoT 資料。</p></div>
+        <div class="tool-card"><h3>paho-mqtt</h3><p>常見 MQTT 套件，可用於裝置與 broker 之間的訊息交換。</p></div>
+        <div class="tool-card"><h3>Flask</h3><p>用於建立簡單 Web API 或儀表板，適合課程延伸專題。</p></div>
+        <div class="tool-card"><h3>pandas（選修）</h3><p>可用於後續資料分析、整理與視覺化，屬於延伸能力。</p></div>
+      </div>
+    </section>
+
+    <section id="goals">
+      <div class="section-head">
+        <h2>本課程 Python 學習目標</h2>
+        <div class="section-note">完成這份學習大綱後，學生應能具備以下實作能力。</div>
+      </div>
+      <div class="panel-card">
+        <ul class="clean">
+          <li>使用 Python 控制 Raspberry Pi GPIO。</li>
+          <li>讀取與處理基本感測器資料。</li>
+          <li>將資料儲存為文字檔、CSV 或 JSON。</li>
+          <li>透過 HTTP 或 MQTT 傳送資料。</li>
+          <li>建立簡單的 IoT 應用系統。</li>
+        </ul>
+      </div>
+    </section>
+  </main>
+
+  <div class="footer container">適用於以 Raspberry Pi 為主軸的物聯網應用概論課程。</div>
+  <button class="top-btn" id="topBtn" aria-label="回到頂部">↑</button>
+
+  <script>
+    document.querySelectorAll('.toggle').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const panel = btn.nextElementSibling;
+        panel.classList.toggle('open');
+        btn.textContent = panel.classList.contains('open') ? '收合詳細內容' : '查看詳細內容';
+      });
+    });
+
+    let expanded = false;
+    const expandAllBtn = document.getElementById('expandAllBtn');
+    expandAllBtn.addEventListener('click', () => {
+      expanded = !expanded;
+      document.querySelectorAll('.panel').forEach(panel => panel.classList.toggle('open', expanded));
+      document.querySelectorAll('.toggle').forEach(btn => btn.textContent = expanded ? '收合詳細內容' : '查看詳細內容');
+      expandAllBtn.textContent = expanded ? '收合全部內容' : '展開全部內容';
+    });
+
+    const topBtn = document.getElementById('topBtn');
+    window.addEventListener('scroll', () => {
+      topBtn.classList.toggle('show', window.scrollY > 400);
+      const links = document.querySelectorAll('.nav-links a');
+      const sections = [...links].map(a => document.querySelector(a.getAttribute('href')));
+      let current = 0;
+      sections.forEach((sec, i) => {
+        if (sec && window.scrollY >= sec.offsetTop - 120) current = i;
+      });
+      links.forEach((link, i) => link.classList.toggle('active', i === current));
+    });
+
+    topBtn.addEventListener('click', () => window.scrollTo({ top: 0, behavior: 'smooth' }));
+  </script>
+</body>
+</html>
